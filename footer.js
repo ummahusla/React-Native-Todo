@@ -6,6 +6,7 @@ class Footer extends Component {
     const { filter } = this.props;
     return (
       <View style={styles.container}>
+        <Text>{this.props.count} count</Text>
         <View style={styles.filters}>
           <TouchableOpacity style={[styles.filter, filter === 'ALL' && styles.selected]} onPress={() => this.props.onFilter('ALL')}>
             <Text>All</Text>
@@ -16,6 +17,9 @@ class Footer extends Component {
           <TouchableOpacity style={[styles.filter, filter === 'COMPLETED' && styles.selected]} onPress={() => this.props.onFilter('COMPLETED')}>
             <Text>Completed</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.filter} onPress={this.props.onClearComplete}>
+            <Text>Clear</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -23,24 +27,23 @@ class Footer extends Component {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    paddingHorizontal: 16,
+  container: {
+    padding: 16,
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   filters: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   filter: {
     padding: 8,
-    margin: 12,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'transparent'
   },
   selected: {
-    borderColor: '#ccc'
+    borderColor: 'rgba(175, 47, 47, .2)'
   }
 })
 
