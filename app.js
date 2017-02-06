@@ -8,15 +8,17 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 === r2 });
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
+      allComplete: false,
       value: "",
       items: [],
       dataSource: ds.cloneWithRows([])
     }
+    this.handleToggleComplete = this.handleToggleComplete.bind(this);
     this.setSource = this.setSource.bind(this);
     this.handleAddItem = this.handleAddItem.bind(this);
-    this.handleonToggleAllComplete = this.handleonToggleAllComplete.bind(this);
+    this.handleToggleAllComplete = this.handleToggleAllComplete.bind(this);
   }
 
   setSource(items, itemsDatasource, otherState = {}) {
@@ -27,18 +29,28 @@ class App extends Component {
     })
   }
 
-  handleonToggleAllComplete() {
+  handleToggleComplete(key, complete) {
+    const newItems = this.state.items.map((item) => {
+      if(item.key !== key) return item;
+      return {
+        ...item,
+        complete
+      }
+    })
+    this.setSource(newItems, newItems);
+  }
+
+  handleToggleAllComplete() {
     const complete = !this.state.allComplete;
     const newItems = this.state.items.map((item) => ({
       ...item,
       complete
-    }));
-    this.setSource(newItems, newItems, { allComplete: complete });
+    }))
+    this.setSource(newItems, newItems, { allComplete: complete })
   }
 
   handleAddItem() {
     if(!this.state.value) return;
-
     const newItems = [
       ...this.state.items,
       {
@@ -46,22 +58,19 @@ class App extends Component {
         text: this.state.value,
         complete: false
       }
-    ];
-    this.setSource(newItems, newItems, { value: "" });
+    ]
+    this.setSource(newItems, newItems, { value: "" })
   }
-
+  
   render() {
-
     return (
       <View style={styles.container}>
-
         <Header
           value={this.state.value}
           onAddItem={this.handleAddItem}
           onChange={(value) => this.setState({ value })}
-          onToggleAllComplete={this.handleonToggleAllComplete}
+          onToggleAllComplete={this.handleToggleAllComplete}
         />
-
         <View style={styles.content}>
           <ListView
             style={styles.list}
@@ -72,18 +81,17 @@ class App extends Component {
               return (
                 <Row
                   key={key}
+                  onComplete={(complete) => this.handleToggleComplete(key, complete)}
                   {...value}
                 />
-              );
+              )
             }}
             renderSeparator={(sectionId, rowId) => {
               return <View key={rowId} style={styles.separator}/>
             }}
           />
         </View>
-
         <Footer />
-
       </View>
     );
   }
