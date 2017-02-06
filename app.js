@@ -10,7 +10,7 @@ const filterItems = (filter, items) => {
     if(filter === 'COMPLETED') return item.complete;
     if(filter === 'ACTIVE') return !item.complete;
   })
-};
+}
 
 class App extends Component {
 
@@ -18,12 +18,12 @@ class App extends Component {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      filter: 'ALL',
       allComplete: false,
+      filter: 'ALL',
       value: '',
       items: [],
       dataSource: ds.cloneWithRows([])
-    };
+    }
     this.handleFilter = this.handleFilter.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
     this.handleToggleComplete = this.handleToggleComplete.bind(this);
@@ -41,7 +41,14 @@ class App extends Component {
   }
 
   handleFilter(filter) {
-    this.setSource(this.state.items, filterItems(filter, this.state.items, { filter }))
+    this.setSource(this.state.items, filterItems(filter, this.state.items), { filter })
+  }
+
+  handleRemoveItem(key) {
+    const newItems = this.state.items.filter((item) => {
+      return item.key !== key
+    })
+    this.setSource(newItems, filterItems(this.state.filter, newItems));
   }
 
   handleToggleComplete(key, complete) {
@@ -57,8 +64,8 @@ class App extends Component {
 
   handleRemoveItem(key) {
     const newItems = this.state.items.filter((item) => {
-      return item.key !== key;
-    });
+      return item.key !== key
+    })
     this.setSource(newItems, filterItems(this.state.filter, newItems));
   }
 
@@ -68,7 +75,7 @@ class App extends Component {
       ...item,
       complete
     }))
-    this.setSource(newItems, filterItems(this.state.filter, newItems), { allComplete: complete });
+    this.setSource(newItems, filterItems(this.state.filter, newItems), { allComplete: complete })
   }
 
   handleAddItem() {
@@ -81,7 +88,7 @@ class App extends Component {
         complete: false
       }
     ]
-    this.setSource(newItems, filterItems(this.state.filter, newItems), { value: "" })
+    this.setSource(newItems, filterItems(this.state.filter, newItems), { value: '' })
   }
 
   render() {
@@ -121,7 +128,6 @@ class App extends Component {
       </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
